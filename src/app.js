@@ -3,6 +3,9 @@ const express = require('express');
 const app = express();
 const filmesRoutes = require('./routes/filmes');
 const db = require('./config/db');
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerOptions = require('./swagger');
 
 app.use(express.json());
 
@@ -18,7 +21,12 @@ db.connect((err) => {
     }
 });
 
+// Iniciar o servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });
+
+// Swagger UI
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
